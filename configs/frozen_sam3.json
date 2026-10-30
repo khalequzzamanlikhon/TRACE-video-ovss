@@ -1,0 +1,84 @@
+{
+  "_comment": "SAM 3 per-frame reference (mode selected on KITTI-STEP dev) and SAM 3 wrapped by the frozen TRACE parameters.",
+  "pf": {
+    "model": "sam3",
+    "mode": "instance"
+  },
+  "tracks_args": {
+    "clip_len": 10,
+    "pps": 32,
+    "iou_thr": 0.7,
+    "stab_thr": 0.85,
+    "min_area": 100,
+    "K": 5,
+    "model": "l"
+  },
+  "cfgs": [
+    {
+      "name": "kitti_step_val__trk2_sam3__perframe"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "name": "kitti_step_val__trk2_sam3__bidir"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "crop_center": 1.5,
+      "name": "kitti_step_val__trk2_sam3__full"
+    },
+    {
+      "name": "camvid_val__trk2_sam3__perframe"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "name": "camvid_val__trk2_sam3__bidir"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "crop_center": 1.5,
+      "name": "camvid_val__trk2_sam3__full"
+    },
+    {
+      "name": "camvid_test__trk2_sam3__perframe"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "name": "camvid_test__trk2_sam3__bidir"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "crop_center": 1.5,
+      "name": "camvid_test__trk2_sam3__full"
+    }
+  ]
+}

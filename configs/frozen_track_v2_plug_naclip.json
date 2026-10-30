@@ -1,0 +1,247 @@
+{
+  "_comment": "Same fusion parameters as frozen_track_v2.json; per-frame model with default settings.",
+  "pf": {
+    "head": "naclip",
+    "short": 448,
+    "mode": "slide",
+    "crop": 224,
+    "stride": 112
+  },
+  "tracks_args": {
+    "clip_len": 10,
+    "pps": 32,
+    "iou_thr": 0.7,
+    "stab_thr": 0.85,
+    "min_area": 100,
+    "K": 5,
+    "model": "l"
+  },
+  "tracks_args_online": {
+    "clip_len": 10,
+    "pps": 32,
+    "iou_thr": 0.7,
+    "stab_thr": 0.85,
+    "min_area": 100,
+    "K": 5,
+    "model": "l",
+    "causal": true
+  },
+  "cfgs": [
+    {
+      "name": "kitti_step_val__trk2_naclip__perframe"
+    },
+    {
+      "dense": {
+        "type": "causal",
+        "g": 0.8
+      },
+      "name": "kitti_step_val__trk2_naclip__raftema"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "name": "kitti_step_val__trk2_naclip__bidir"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "name": "kitti_step_val__trk2_naclip__full_nodebias"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "crop_center": 1.5,
+      "name": "kitti_step_val__trk2_naclip__full"
+    },
+    {
+      "dense": {
+        "type": "causal",
+        "g": 0.8
+      },
+      "name": "kitti_step_val__trk2on_naclip__raftema"
+    },
+    {
+      "dense": {
+        "type": "causal",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "causal": true,
+      "name": "kitti_step_val__trk2on_naclip__full_nodebias"
+    },
+    {
+      "dense": {
+        "type": "causal",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "crop_center": 1.5,
+      "causal": true,
+      "name": "kitti_step_val__trk2on_naclip__full"
+    },
+    {
+      "name": "camvid_val__trk2_naclip__perframe"
+    },
+    {
+      "dense": {
+        "type": "causal",
+        "g": 0.8
+      },
+      "name": "camvid_val__trk2_naclip__raftema"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "name": "camvid_val__trk2_naclip__bidir"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "name": "camvid_val__trk2_naclip__full_nodebias"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "crop_center": 1.5,
+      "name": "camvid_val__trk2_naclip__full"
+    },
+    {
+      "dense": {
+        "type": "causal",
+        "g": 0.8
+      },
+      "name": "camvid_val__trk2on_naclip__raftema"
+    },
+    {
+      "dense": {
+        "type": "causal",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "causal": true,
+      "name": "camvid_val__trk2on_naclip__full_nodebias"
+    },
+    {
+      "dense": {
+        "type": "causal",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "crop_center": 1.5,
+      "causal": true,
+      "name": "camvid_val__trk2on_naclip__full"
+    },
+    {
+      "name": "camvid_test__trk2_naclip__perframe"
+    },
+    {
+      "dense": {
+        "type": "causal",
+        "g": 0.8
+      },
+      "name": "camvid_test__trk2_naclip__raftema"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "name": "camvid_test__trk2_naclip__bidir"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "name": "camvid_test__trk2_naclip__full_nodebias"
+    },
+    {
+      "dense": {
+        "type": "bidir",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "crop_center": 1.5,
+      "name": "camvid_test__trk2_naclip__full"
+    },
+    {
+      "dense": {
+        "type": "causal",
+        "g": 0.8
+      },
+      "name": "camvid_test__trk2on_naclip__raftema"
+    },
+    {
+      "dense": {
+        "type": "causal",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "causal": true,
+      "name": "camvid_test__trk2on_naclip__full_nodebias"
+    },
+    {
+      "dense": {
+        "type": "causal",
+        "g": 0.8
+      },
+      "pool": "tube",
+      "a": 2,
+      "b": 2.0,
+      "crop": "both",
+      "crop_center": 1.5,
+      "causal": true,
+      "name": "camvid_test__trk2on_naclip__full"
+    }
+  ]
+}

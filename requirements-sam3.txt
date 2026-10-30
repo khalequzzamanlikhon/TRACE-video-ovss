@@ -1,0 +1,10 @@
+# Separate environment for the SAM 3 reference only (Python 3.12).
+torch==2.7.1
+torchvision==0.22.1
+numpy==1.26.4
+scipy==1.13.1
+opencv-python-headless==4.10.0.84
+einops
+pycocotools
+psutil
+setuptools<81

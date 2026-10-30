@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+data/
+cache/
+third_party/
+results/*
+!results/summary.json
