@@ -73,18 +73,6 @@ GPU=0 PY_SAM3=/path/to/sam3/env/bin/python bash scripts/run_sam3.sh kitti_step v
 
 The frozen configurations are in `configs/`. To keep the held-out sets clean, the code refuses to evaluate a validation or test split with a configuration that is not in one of those files. `tools/` holds the consistency evaluation and the scripts that generate the paper's tables and figure.
 
-## Layout
-
-```
-tovss/      data loading, CLIP and DINO encoders, RAFT wrapper, metrics, class names
-pipeline/   perframe.py, temporal.py (flow smoothing), tracks.py (SAM 2), fusion.py, sam3_perframe.py
-configs/    frozen configurations
-scripts/    end-to-end runs
-tools/      evaluation, tables, figure
-results/    summary of all reported numbers
-assets/     figure
-```
-
 ## Acknowledgments
 
 This code uses [SAM 2](https://github.com/facebookresearch/sam2), [RAFT](https://github.com/princeton-vl/RAFT) (torchvision), [OpenCLIP](https://github.com/mlfoundations/open_clip) and [DINO](https://github.com/facebookresearch/dino). The per-frame model follows [ProxyCLIP](https://github.com/mc-lan/ProxyCLIP).
