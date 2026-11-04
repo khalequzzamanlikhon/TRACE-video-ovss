@@ -1,8 +1,14 @@
-# TRACE: Track-level Region Aggregation with Crop Evidence
+# TRACE
 
 Code for the paper **"Static Training-Free Open-Vocabulary Segmenters on Video: Flicker, Hallucination, and a Space-Time Remedy"**.
 
+Md Khalequzzaman Sarker Likhon, Md Malek Sarker
+
 TRACE is a training-free, model-agnostic wrapper that turns any per-frame open-vocabulary segmentation model into a video segmenter. It pools evidence over space-time SAM 2 tracks, classifies each track from its largest views with a video-level class debiasing, and aligns the remaining dense evidence with optical flow. It has an offline and an online (causal) variant.
+
+![KITTI-STEP val examples](assets/qual.png)
+
+KITTI-STEP val, middle frame of sequences 0002, 0008 and 0016 (fixed in advance, not selected by result). TRACE removes many spurious regions of the per-frame model, such as poles and traffic lights in vegetation and sky.
 
 ## Results
 
@@ -16,7 +22,7 @@ mIoU, per-frame → with TRACE (offline). Hyperparameters were selected on KITTI
 | NACLIP-style | 33.0 → **40.9** | 38.7 → **50.9** | 36.2 → **47.0** |
 | SAM 3 per frame (reference) | 64.6 | 68.7 | 69.4 |
 
-SAM 3 is trained with concept-level mask supervision, so it is reported as a reference, not as a training-free method. All numbers, including per-class IoU and consistency metrics, are in [`results/summary.json`](results/summary.json).
+SCLIP-style and NACLIP-style use our reimplementation of each method's attention on CLIP ViT-B/16, not the official code. With the Proxy model, the online variant is 0.4 to 2.1 mIoU below the offline one. SAM 3 is trained with concept-level mask supervision, so it is reported as a reference, not as a training-free method. All numbers, including per-class IoU and consistency metrics, are in [`results/summary.json`](results/summary.json).
 
 ## Installation
 
@@ -65,7 +71,7 @@ GPU=0 bash scripts/run_plug.sh kitti_step val
 GPU=0 PY_SAM3=/path/to/sam3/env/bin/python bash scripts/run_sam3.sh kitti_step val
 ```
 
-The frozen configurations are in `configs/`. Evaluating a validation or test split requires a configuration listed in one of those files. `tools/` holds the consistency evaluation and the scripts that generate the paper's tables and figure.
+The frozen configurations are in `configs/`. To keep the held-out sets clean, the code refuses to evaluate a validation or test split with a configuration that is not in one of those files. `tools/` holds the consistency evaluation and the scripts that generate the paper's tables and figure.
 
 ## Layout
 
@@ -76,7 +82,12 @@ configs/    frozen configurations
 scripts/    end-to-end runs
 tools/      evaluation, tables, figure
 results/    summary of all reported numbers
+assets/     figure
 ```
+
+## Acknowledgments
+
+This code uses [SAM 2](https://github.com/facebookresearch/sam2), [RAFT](https://github.com/princeton-vl/RAFT) (torchvision), [OpenCLIP](https://github.com/mlfoundations/open_clip) and [DINO](https://github.com/facebookresearch/dino). The per-frame model follows [ProxyCLIP](https://github.com/mc-lan/ProxyCLIP).
 
 ## License
 
