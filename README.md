@@ -1,4 +1,4 @@
-# TRACE
+# TRACE: Track-level Region Aggregation with Crop Evidence
 
 Code for the paper **"Static Training-Free Open-Vocabulary Segmenters on Video: Flicker, Hallucination, and a Space-Time Remedy"**.
 
