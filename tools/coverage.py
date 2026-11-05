@@ -2,8 +2,7 @@
 Reads saved predictions (results/<exp>/preds) and the track id maps; per over-predicted class, prints the share
 of its false-positive pixels that are uncovered and the class precision on covered / uncovered pixels.
 With --tex, writes paper_output/tables/coverage.tex.
-  python tools/coverage.py dev_v2_full cache/tracks_v2
-  python tools/coverage.py kitti_step_val__trk2__full cache/tracks_val --split val --tex
+  python tools/coverage.py kitti_step_val__trk2__full cache/tracks_kitti_step_val --split val --tex
 """
 import argparse
 import json

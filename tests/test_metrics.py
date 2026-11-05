@@ -1,4 +1,4 @@
-"""T1: metric sanity on synthetic data (CPU + GPU for warping). Run: python tests/test_metrics.py"""
+"""Metric sanity checks on synthetic data (CPU only). Run: python tests/test_metrics.py"""
 import os
 import sys
 
@@ -56,4 +56,4 @@ if __name__ == '__main__':
     test_miou()
     test_vc_constant_not_gameable()
     test_warped_consistency()
-    print('T1 metric tests: PASS')
+    print('metric tests: PASS')

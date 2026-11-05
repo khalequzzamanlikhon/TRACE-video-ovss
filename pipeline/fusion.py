@@ -1,4 +1,4 @@
-"""fuse dense training-free OVSS logits with SAM2 space-time tracks.
+"""Fuse dense training-free OVSS logits with SAM2 space-time tracks.
 
 For pixel x of frame t covered by track k (id map from pipeline/tracks.py), with dense map D_t (per-frame or the
 bidirectional RAFT smoother of pipeline/temporal.py):
@@ -6,7 +6,7 @@ bidirectional RAFT smoother of pipeline/temporal.py):
   p_pool(k): dense probabilities averaged over track k in the current frame ('frame') or over all its frames ('tube')
   p_crop(k): CLIP image embeddings of the K largest views of k (masked / context crops), area-weighted, vs text
 Uncovered pixels keep the dense prediction. Everything runs at the cache resolution (half native); id maps are
-nearest-downsampled; the fused map is upsampled to native resolution for evaluation (same as the 36.4 baseline).
+nearest-downsampled; the fused map is upsampled to native resolution for evaluation.
 
 Temporal vocabulary pruning ('presence'): per clip, a class is present if some track's multi-view crop-CLIP
 probability for it reaches `thr` (src 'crop'), or if it occurs in the GT of the clip (src 'oracle', upper bound).

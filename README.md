@@ -38,9 +38,22 @@ mkdir -p third_party/sam2/checkpoints
 wget -P third_party/sam2/checkpoints https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_large.pt
 ```
 
-The results were produced with PyTorch 2.5.1. DINO and CLIP weights download automatically on first use.
+The results were produced with PyTorch 2.5.1. DINO, CLIP and RAFT weights download automatically on first use.
 
-The SAM 3 reference needs its own environment (Python 3.12, `requirements-sam3.txt`, [facebookresearch/sam3](https://github.com/facebookresearch/sam3) at commit `7f473cf`) and access to the gated `facebook/sam3` weights.
+The SAM 3 reference needs its own environment and access to the gated [`facebook/sam3`](https://huggingface.co/facebook/sam3) weights on Hugging Face:
+
+```bash
+conda create -n trace-sam3 python=3.12 -y
+conda activate trace-sam3
+pip install -r requirements-sam3.txt
+
+git clone https://github.com/facebookresearch/sam3.git third_party/sam3
+git -C third_party/sam3 checkout 7f473cf
+pip install -e third_party/sam3
+hf auth login
+```
+
+Set `SAM2_ROOT` and `SAM3_ROOT` if the repositories are not in `third_party/`.
 
 ## Data
 
@@ -52,7 +65,17 @@ data/kitti_step/training/image_02/<seq>/*.png                      KITTI trackin
 data/kitti_step/kitti-step/panoptic_maps/{train,val}/<seq>/*.png   KITTI-STEP labels
 ```
 
-Set `SAM2_ROOT` and `SAM3_ROOT` if the repositories are not in `third_party/`.
+- **CamVid:** the `CamVid` folder of [SegNet-Tutorial](https://github.com/alexgkendall/SegNet-Tutorial/tree/master/CamVid).
+- **KITTI-STEP:** the left colour images of the [KITTI tracking benchmark](https://www.cvlibs.net/datasets/kitti/eval_tracking.php) (`data_tracking_image_2.zip`) and the [KITTI-STEP labels](https://storage.googleapis.com/gresearch/tf-deeplab/data/kitti-step.tar.gz) from [DeepLab2](https://github.com/google-research/deeplab2/blob/main/g3doc/setup/kitti_step.md):
+
+```bash
+mkdir -p data/kitti_step && cd data/kitti_step
+unzip /path/to/data_tracking_image_2.zip         # gives training/image_02 and testing/image_02
+wget https://storage.googleapis.com/gresearch/tf-deeplab/data/kitti-step.tar.gz
+tar -xf kitti-step.tar.gz                        # gives kitti-step/panoptic_maps
+```
+
+Keep the folders as they are unpacked. The DeepLab2 guide moves them into a different layout, which this code does not use.
 
 ## Reproducing the results
 
@@ -71,7 +94,14 @@ GPU=0 bash scripts/run_plug.sh kitti_step val
 GPU=0 PY_SAM3=/path/to/sam3/env/bin/python bash scripts/run_sam3.sh kitti_step val
 ```
 
-The frozen configurations are in `configs/`. To keep the held-out sets clean, the code refuses to evaluate a validation or test split with a configuration that is not in one of those files. `tools/` holds the consistency evaluation and the scripts that generate the paper's tables and figure.
+The frozen configurations are in `configs/`. To keep the held-out sets clean, the code refuses to evaluate a validation or test split with a configuration that is not in one of those files.
+
+After all runs, `python tools/make_paper_numbers.py` writes the paper's main tables and numbers to `paper_output/`, and `python tools/make_qual_figure.py` makes the figure. The hallucination and coverage tables come from:
+
+```bash
+python tools/hallucination_stats.py kitti_step_val__trk2__perframe kitti_step_val__trk2__full
+python tools/coverage.py kitti_step_val__trk2__full cache/tracks_kitti_step_val --split val --tex
+```
 
 ## Acknowledgments
 

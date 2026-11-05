@@ -1,7 +1,7 @@
-"""Frozen CLIP + DINO encoders and training-free per-frame heads.
+"""Frozen CLIP + DINO encoders shared by the training-free per-frame models.
 
-Correct value path (fixes v1 bug C1): z = proj(ln_post(out_proj(A @ v))), no residual, no FFN.
-DINO features are computed on an image resized so its patch grid equals CLIP's grid (fixes M6).
+The per-frame heads (pipeline/perframe.py) read the value tokens of CLIP's last block and project them as
+z = proj(ln_post(out_proj(A @ v))), with no residual and no FFN.
 """
 import torch
 import torch.nn.functional as F
@@ -72,92 +72,8 @@ class Encoders(torch.nn.Module):
         q, k, v = F.linear(blk.ln_1(x), blk.attn.in_proj_weight, blk.attn.in_proj_bias).chunk(3, -1)
         return q, k, v, blk, (gh, gw)
 
-    @torch.no_grad()
-    def project(self, v_mix, blk):
-        """v_mix (1,N+1,D) value tokens incl. CLS slot -> normalised patch embeddings (1,N,E)."""
-        z = self.V.ln_post(blk.attn.out_proj(v_mix))[:, 1:]
-        if self.V.proj is not None:
-            z = z @ self.V.proj
-        return F.normalize(z, dim=-1)
-
-    @torch.no_grad()
-    def dino_keys(self, img, grid):
-        gh, gw = grid
-        x = F.interpolate(img, (self.dino_patch * gh, self.dino_patch * gw), mode='bilinear', align_corners=False)
-        x = _norm(x, IN_MEAN, IN_STD)
-        if self.dino_name.startswith('dinov2'):
-            t = self.dino.forward_features(x)['x_norm_patchtokens']
-        else:
-            t = self.dino.get_intermediate_layers(x, n=1)[0][:, 1:]
-        return F.normalize(t.float(), dim=-1)
-
-    @torch.no_grad()
-    def encode(self, img, need_dino=True):
-        q, k, v, blk, grid = self.clip_tokens(img)
-        out = {'q': q, 'k': k, 'v': v, 'blk': blk, 'grid': grid}
-        if need_dino:
-            out['E'] = self.dino_keys(img, grid)[0]          # (N, Dd)
-        return out
-
 
 def query_logits_to_class(qlogits, owner, num_classes):
     """qlogits (N,Q) -> (N,C): max over the synonyms of each class."""
     out = qlogits.new_full((qlogits.shape[0], num_classes), float('-inf'))
     return out.scatter_reduce(1, owner.view(1, -1).expand_as(qlogits), qlogits, reduce='amax')
-
-
-def intra_proxy_attention(E, tau=0.07, adaptive=False):
-    """E (N,D) normalised -> (N,N) row-stochastic proxy attention."""
-    S = E @ E.T
-    if adaptive:
-        S = S.masked_fill(S < S.mean(-1, keepdim=True), float('-inf'))
-    return torch.softmax(S / tau, -1)
-
-
-class PerFrameHead:
-    """Training-free per-frame OVSS heads that share the Encoders.
-
-    method: 'maskclip' (A = I) | 'proxy' (DINO proxy attention) | 'sclip' (CSA: q-q + k-k attention)
-    """
-
-    def __init__(self, enc, text, owner, num_classes, method='proxy', tau=0.07, adaptive=False, logit_scale=100.0):
-        self.enc, self.text, self.owner, self.C = enc, text, owner, num_classes
-        self.method, self.tau, self.adaptive, self.scale = method, tau, adaptive, logit_scale
-
-    def needs_dino(self):
-        return self.method == 'proxy'
-
-    def attention(self, feats):
-        if self.method == 'proxy':
-            return intra_proxy_attention(feats['E'], self.tau, self.adaptive)
-        if self.method == 'sclip':
-            nh = self.enc.V.transformer.resblocks[-1].attn.num_heads
-            q, k = feats['q'][0, 1:], feats['k'][0, 1:]
-            N, D = q.shape
-            qh, kh = q.view(N, nh, D // nh).transpose(0, 1), k.view(N, nh, D // nh).transpose(0, 1)
-            sc = (D // nh) ** -0.5
-            return 0.5 * (torch.softmax(qh @ qh.transpose(1, 2) * sc, -1) +
-                          torch.softmax(kh @ kh.transpose(1, 2) * sc, -1))   # (nh,N,N)
-        return None  # maskclip
-
-    def mix_values(self, feats, A):
-        v = feats['v'][0]
-        if A is None:
-            return v[None]
-        vp = v[1:]
-        if A.dim() == 3:  # per-head attention
-            nh = A.shape[0]
-            N, D = vp.shape
-            vh = vp.view(N, nh, D // nh).transpose(0, 1)
-            mixed = (A @ vh).transpose(0, 1).reshape(N, D)
-        else:
-            mixed = A @ vp
-        return torch.cat([v[:1], mixed], 0)[None]
-
-    def logits_from_values(self, v_mix, feats):
-        z = self.enc.project(v_mix, feats['blk'])[0]                    # (N,E)
-        ql = self.scale * z @ self.text.T                                # (N,Q)
-        return query_logits_to_class(ql, self.owner, self.C)             # (N,C)
-
-    def __call__(self, feats):
-        return self.logits_from_values(self.mix_values(feats, self.attention(feats)), feats)

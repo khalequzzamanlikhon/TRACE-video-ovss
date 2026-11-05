@@ -1,4 +1,4 @@
-"""class-agnostic space-time tracks with SAM2 + multi-view crop-CLIP embeddings.
+"""Class-agnostic space-time tracks with SAM2 + multi-view crop-CLIP embeddings.
 
 Per sequence, in clips of L frames:
   1. SAM2 automatic masks on the clip's middle frame -> non-overlapping segments (small masks painted on top).
@@ -8,7 +8,7 @@ Per sequence, in clips of L frames:
 Outputs (cache/tracks/<seq>/): ids_<frame>.png (uint16, native res, globally unique ids) and tracks.pt
   {track_id: {'clip': c, 'views': [(frame_idx, area)], 'emb_mask': (K,E), 'emb_ctx': (K,E)}}.
 
-Runs in the `sam2` env:
+Called by scripts/run_heldout.sh for the held-out sets. On the KITTI-STEP development sequences:
   python pipeline/tracks.py --seqs 0001,0004,0011
 """
 import argparse

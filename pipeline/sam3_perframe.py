@@ -8,7 +8,7 @@ Per frame and class c (max over the class's query names), with presence score pi
   both     : max(semantic, instance)
 Cached value: log(s_c + 1e-6)  (softmax over classes then gives the normalised scores).
 
-Runs in the `sam3` env:
+Runs in the SAM 3 environment (see README):
   python pipeline/sam3_perframe.py --mode semantic --split dev --cache_dir cache
 """
 import argparse

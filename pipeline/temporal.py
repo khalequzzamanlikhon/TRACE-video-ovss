@@ -1,6 +1,6 @@
-"""how much can flow-aligned temporal aggregation add on top of a strong
-per-frame model? Per-frame logits and RAFT flows are cached per sequence (half native resolution, on GPU),
-then many aggregation rules are evaluated on the same cache.
+"""Per-frame scores and flow-aligned temporal aggregation (RAFT-EMA and the bidirectional flow smoother).
+Per-frame logits and RAFT flows are cached per sequence (half native resolution), then the aggregation rules
+are evaluated on the same cache.
 
 Aggregators (X_t = per-frame class map, in prob or logit space; w_t = per-pixel weight):
   none     : X_t

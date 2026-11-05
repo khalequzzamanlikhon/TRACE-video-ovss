@@ -4,7 +4,7 @@ RAFT flow is computed once per consecutive frame pair (at native resolution) and
 Also reports reference rows: 'GT' (labels warped, where both frames are labelled) and 'const' (single class).
 Writes tc.json into each experiment directory and prints a summary.
 
-  python tools/eval_tc.py results/kitti_val__proxy__none results/kitti_val__proxy__tpa
+  python tools/eval_tc.py results/kitti_step_val__trk2__perframe results/kitti_step_val__trk2__full
 """
 import json
 import os

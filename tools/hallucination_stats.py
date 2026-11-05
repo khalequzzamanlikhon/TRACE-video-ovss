@@ -1,7 +1,7 @@
 """Per-class recall / precision of saved predictions and where each class's false positives fall
 (evaluation only; reads results/<exp>/preds and the GT). Writes paper_output/tables/halluc.tex.
 
-  python tools/hallucination_stats.py kitti_step_val__trk__perframe kitti_step_val__trk__full
+  python tools/hallucination_stats.py kitti_step_val__trk2__perframe kitti_step_val__trk2__full
 """
 import json
 import os

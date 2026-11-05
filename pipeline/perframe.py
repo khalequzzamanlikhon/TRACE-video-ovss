@@ -1,6 +1,7 @@
-"""how strong can the per-frame training-free model get on KITTI-STEP?
+"""Training-free per-frame models: ProxyCLIP-style proxy attention, MaskCLIP, SCLIP-style and NACLIP-style heads.
 
-Compares whole-image vs sliding-window inference, softmax(S/tau) vs ProxyCLIP-style attention, DINO token vs
+Run directly, it compares per-frame settings on the KITTI-STEP development sequences: whole-image vs sliding-window
+inference, softmax(S/tau) vs ProxyCLIP-style attention, DINO token vs
 last-block key features, and DINO grid resolution (CLIP values upsampled to the finer DINO grid).
 
 usage: python pipeline/perframe.py --configs '[{...}, ...]' --out results/perframe.json
@@ -11,7 +12,6 @@ import os
 import sys
 import time
 
-import numpy as np
 import torch
 import torch.nn.functional as F
 
